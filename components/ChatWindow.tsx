@@ -72,6 +72,7 @@ export default function ChatWindow() {
           role: "bot",
           content: predefined.response,
           timestamp: new Date(),
+          menuSections: predefined.menuSections,
         };
         setMessages((prev) => [...prev, botMessage]);
         setQuickReplies(predefined.followUps);
@@ -104,7 +105,7 @@ export default function ChatWindow() {
           const content = res.ok
             ? data.message
             : data.error ??
-              "Sorry, something went wrong. Please try again or call us at 08012345678. 🙏";
+              "Sorry, something went wrong. Please try again or call us at 08125888459. 🙏";
 
           setMessages((prev) => [
             ...prev,
@@ -123,7 +124,7 @@ export default function ChatWindow() {
               id: `bot-${Date.now()}`,
               role: "bot",
               content:
-                "Oops! I'm having trouble connecting. Please try again or call us at 08012345678. 🙏",
+                "Oops! I'm having trouble connecting. Please try again or call us at 08125888459. 🙏",
               timestamp: new Date(),
             },
           ]);
