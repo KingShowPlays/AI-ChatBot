@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import Groq from "groq-sdk";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-const SYSTEM_PROMPT = `You are a friendly and helpful customer support chatbot for Sweet Delights Bakery, a small bakery in Lagos, Nigeria.
+const SYSTEM_PROMPT = `You are a friendly and helpful customer support chatbot for Sweet Delights Bakery, a small bakery in Port Harcourt, Nigeria.
 
 ## About Sweet Delights Bakery
-- Location: Rd 123, Port Harcourt, Rivers State
+- Location: Avenue 123, Port Harcourt, Rivers State
 - Phone: 08125888459
 - Hours: Monday to Saturday, 8:00 AM – 7:00 PM. Closed on Sundays.
 
@@ -48,60 +48,43 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await client.messages.create({
-      model: "claude-sonnet-4-0",
+    const response = await client.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
       max_tokens: 512,
-      system: SYSTEM_PROMPT,
-      messages,
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        ...messages.map((m: { role: string; content: string }) => ({
+          role: m.role as "user" | "assistant",
+          content: m.content,
+        })),
+      ],
     });
 
-    const textBlock = response.content.find((b) => b.type === "text");
     const text =
-      textBlock?.type === "text"
-        ? textBlock.text
-        : "I'm sorry, I couldn't process that. Please try again or call us at 08125888459. 🙏";
+      response.choices[0]?.message?.content ??
+      "I'm sorry, I couldn't process that. Please try again or call us at 08125888459. 🙏";
 
     return NextResponse.json({ message: text });
   } catch (error) {
-    console.error("Claude API error:", error);
+    console.error("Groq API error:", error);
 
-    if (error instanceof Anthropic.RateLimitError) {
+    const errMsg = error instanceof Error ? error.message : "";
+
+    if (errMsg.includes("429") || errMsg.includes("quota")) {
       return NextResponse.json(
-        {
-          error:
-            "I'm a little busy right now! Please try again in a moment. 😊",
-        },
+        { error: "I'm a little busy right now! Please try again in a moment. 😊" },
         { status: 429 }
       );
     }
-    if (error instanceof Anthropic.AuthenticationError) {
+    if (errMsg.includes("401") || errMsg.includes("API_KEY")) {
       return NextResponse.json(
-        {
-          error:
-            "Configuration error. Please contact the bakery directly at 08125888459.",
-        },
+        { error: "Configuration error. Please contact the bakery directly at 08125888459." },
         { status: 401 }
       );
     }
-    if (error instanceof Anthropic.BadRequestError) {
-      const message =
-        (error.error as { error?: { message?: string } })?.error?.message ?? "";
-      if (message.toLowerCase().includes("credit")) {
-        return NextResponse.json(
-          {
-            error:
-              "The AI assistant is temporarily unavailable. Please call us directly at 08125888459 — we're happy to help! 😊",
-          },
-          { status: 503 }
-        );
-      }
-    }
 
     return NextResponse.json(
-      {
-        error:
-          "Oops! Something went wrong. Please try again or call us at 08125888459. 🙏",
-      },
+      { error: "Oops! Something went wrong. Please try again or call us at 08125888459. 🙏" },
       { status: 500 }
     );
   }
