@@ -204,7 +204,7 @@ export default function ChatWindow() {
               onKeyDown={handleKeyDown}
               placeholder="Type a message..."
               disabled={isLoading}
-              className="flex-1 bg-transparent py-2.5 text-sm text-gray-800
+              className="flex-1 bg-transparent py-2.5 text-base text-gray-800
                          placeholder-gray-400 outline-none disabled:opacity-60"
             />
           </div>
