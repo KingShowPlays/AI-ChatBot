@@ -73,6 +73,7 @@ export default function ChatWindow() {
           content: predefined.response,
           timestamp: new Date(),
           menuSections: predefined.menuSections,
+          richCard: predefined.richCard,
         };
         setMessages((prev) => [...prev, botMessage]);
         setQuickReplies(predefined.followUps);

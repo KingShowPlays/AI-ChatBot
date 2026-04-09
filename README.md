@@ -1,6 +1,6 @@
 # 🎂 Sweet Delights Bakery — AI Customer Support Chatbot
 
-A production-ready AI-powered customer support chatbot for **Sweet Delights Bakery**, a small bakery on Lagos Island, Nigeria. Built with Next.js 14+, TypeScript, Tailwind CSS v4, and the Anthropic Claude API.
+A production-ready AI-powered customer support chatbot for **Sweet Delights Bakery**, a small bakery on Port Harcourt, Nigeria. Built with Next.js 14+, TypeScript, Tailwind CSS v4, and the Anthropic Claude API.
 
 ---
 
@@ -76,12 +76,12 @@ aichatbot/
 
 ## Business Data
 
-|              |                                             |
-| ------------ | ------------------------------------------- |
-| **Location** | Rd 123, Port Harcourt, Rivers State         |
-| **Phone**    | 08125888459                                 |
-| **Hours**    | Mon–Sat, 8:00 AM – 7:00 PM · Closed Sundays |
-| **Delivery** | Lagos Island only · Min ₦5,000 · Fee ₦1,000 |
+|              |                                              |
+| ------------ | -------------------------------------------- |
+| **Location** | Rd 123, Port Harcourt, Rivers State          |
+| **Phone**    | 08125888459                                  |
+| **Hours**    | Mon–Sat, 8:00 AM – 7:00 PM · Closed Sundays  |
+| **Delivery** | Port Harcourt only · Min ₦5,000 · Fee ₦1,000 |
 
 ### Menu
 

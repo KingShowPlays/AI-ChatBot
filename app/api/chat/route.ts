@@ -24,7 +24,7 @@ Birthday Cakes:
 - Large Birthday Cake: ₦40,000
 
 ## Delivery Policy
-- Available within Lagos Island only
+- Available within Port Harcourt only
 - Minimum order: ₦5,000
 - Delivery fee: ₦1,000
 - Orders placed by calling during business hours

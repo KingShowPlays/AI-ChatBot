@@ -43,32 +43,62 @@ export const PREDEFINED_RESPONSES: PredefinedEntry[] = [
   },
   {
     trigger: "Opening Hours",
-    response:
-      "We're open **Monday to Saturday, 8:00 AM – 7:00 PM**. We are closed on Sundays. Feel free to visit or call us anytime during those hours! ☀️",
+    response: "Here's when you can find us! ☀️",
+    richCard: {
+      type: "hours",
+      rows: [
+        { day: "Monday", hours: "8:00 AM – 7:00 PM", open: true },
+        { day: "Tuesday", hours: "8:00 AM – 7:00 PM", open: true },
+        { day: "Wednesday", hours: "8:00 AM – 7:00 PM", open: true },
+        { day: "Thursday", hours: "8:00 AM – 7:00 PM", open: true },
+        { day: "Friday", hours: "8:00 AM – 7:00 PM", open: true },
+        { day: "Saturday", hours: "8:00 AM – 7:00 PM", open: true },
+        { day: "Sunday", hours: "Closed", open: false },
+      ],
+    },
     followUps: ["Location", "View Menu & Prices", "Contact Us"],
   },
   {
     trigger: "Location",
-    response:
-      "📍 Find us at **Rd 123, Port Harcourt, Rivers State**. We'd love to have you visit! If you need directions, give us a call at **08125888459**.",
+    response: "Come visit us! We'd love to see you. 📍",
+    richCard: {
+      type: "location",
+      address: "Avenue 123, Port Harcourt, Rivers",
+      landmark: "Near Lagos Island General Hospital",
+    },
     followUps: ["Opening Hours", "Delivery Info", "Contact Us"],
   },
   {
     trigger: "Delivery Info",
-    response:
-      "🚚 We deliver **within Lagos Island** for orders above **₦5,000**. A flat delivery fee of **₦1,000** applies. To arrange delivery, call us at **08125888459** during business hours (Mon–Sat, 8AM–7PM).",
+    response: "Here's everything you need to know about our delivery. 🚚",
+    richCard: {
+      type: "delivery",
+      area: "Within Lagos Island",
+      minOrder: "₦5,000",
+      fee: "₦1,000 flat",
+      phone: "08125888459",
+    },
     followUps: ["View Menu & Prices", "Place an Order", "Contact Us"],
   },
   {
     trigger: "Contact Us",
-    response:
-      "📞 Give us a call at **08125888459**. We're available **Monday to Saturday, 8AM–7PM**. You can also visit us at **Rd 123, Port Harcourt, Rivers State**. We're always happy to help! 😊",
+    response: "We're always happy to help! Reach us here. 😊",
+    richCard: {
+      type: "contact",
+      phone: "08125888459",
+      hours: "Mon – Sat, 8:00 AM – 7:00 PM",
+      address: "Avenue 123, Port Harcourt, Rivers",
+    },
     followUps: ["Opening Hours", "Location", "Place an Order"],
   },
   {
     trigger: "Place an Order",
-    response:
-      "To place an order, please call us at **08125888459** during business hours (Mon–Sat, 8AM–7PM). 🎉\n\nFor **birthday cakes**, we recommend ordering at least **2–3 days in advance** so we can make it perfect for you!",
+    response: "Ready to order? Here's how! 🎉",
+    richCard: {
+      type: "order",
+      phone: "08125888459",
+      cakeNote: "For birthday cakes, order at least 2–3 days in advance.",
+    },
     followUps: ["View Menu & Prices", "Delivery Info", "Contact Us"],
   },
 ];
