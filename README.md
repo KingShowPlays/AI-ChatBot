@@ -1,6 +1,6 @@
 # 🎂 Sweet Delights Bakery — AI Customer Support Chatbot
 
-A production-ready AI-powered customer support chatbot for **Sweet Delights Bakery**, a small bakery on Port Harcourt, Nigeria. Built with Next.js 14+, TypeScript, Tailwind CSS v4, and the Anthropic Claude API.
+A production-ready AI-powered customer support chatbot for **Sweet Delights Bakery**, a small bakery in Port Harcourt, Nigeria. Built with Next.js 14+, TypeScript, Tailwind CSS v4, and the Groq API (Llama 3.3 70B).
 
 ---
 
@@ -8,9 +8,8 @@ A production-ready AI-powered customer support chatbot for **Sweet Delights Bake
 
 ### Chat Interface
 
-- **Messenger-style layout** — full-screen on mobile, centered card on desktop
-- **Animated background** — warm gradient with floating bakery-themed SVG decorations
-- **Message bubbles** — user messages (blue, right-aligned), bot messages (white, left-aligned)
+- **Messenger-style full-screen layout** with warm animated gradient background
+- **Message bubbles** — user messages (blue, right-aligned), bot messages (grey, left-aligned)
 - **Timestamps** on every message
 - **Auto-scroll** to the latest message
 - **Smooth fade-in animation** on each new message
@@ -28,24 +27,36 @@ A production-ready AI-powered customer support chatbot for **Sweet Delights Bake
 - Context-relevant follow-up chips shown after each reply
 - **← All options** chip always available to return to the full menu
 
-### AI Responses (Claude API)
+### Rich Cards
 
-- Free-form messages not matching a predefined trigger → sent to **Claude API**
+Predefined quick replies render beautiful interactive cards instead of plain text:
+
+| Quick Reply | Card Type |
+| --- | --- |
+| Opening Hours | Day-by-day table with open/closed indicators and today highlighted |
+| Location | Map card with a "Get Directions" button linking to Google Maps |
+| Contact Us | Tappable call button, hours, and address |
+| Delivery Info | Structured info card with area, min order, fee, and call button |
+| Place an Order | Large call CTA + cake pre-order tip |
+
+### AI Responses (Groq API)
+
+- Free-form messages not matching a predefined trigger → sent to **Groq API** (Llama 3.3 70B)
 - Full conversation history passed for context-aware multi-turn replies
 - System prompt strictly scopes the bot to bakery topics
-- Graceful in-chat error messages for rate limits, billing, and network failures
+- Graceful in-chat error messages for rate limits and network failures
 
 ---
 
 ## Tech Stack
 
-| Layer     | Technology                                                     |
-| --------- | -------------------------------------------------------------- |
-| Framework | Next.js 14+ (App Router)                                       |
-| Language  | TypeScript                                                     |
-| Styling   | Tailwind CSS v4                                                |
-| AI        | Anthropic Claude `claude-sonnet-4-0` via `@anthropic-ai/sdk`   |
-| State     | React hooks (`useState`, `useEffect`, `useRef`, `useCallback`) |
+| Layer | Technology |
+| --- | --- |
+| Framework | Next.js 14+ (App Router) |
+| Language | TypeScript |
+| Styling | Tailwind CSS v4 |
+| AI | Groq `llama-3.3-70b-versatile` via `groq-sdk` |
+| State | React hooks (`useState`, `useEffect`, `useRef`, `useCallback`) |
 
 ---
 
@@ -54,21 +65,21 @@ A production-ready AI-powered customer support chatbot for **Sweet Delights Bake
 ```
 aichatbot/
 ├── app/
-│   ├── api/chat/route.ts          # Claude API endpoint
+│   ├── api/chat/route.ts          # Groq API endpoint
 │   ├── globals.css                # Animations: typing bounce, float, fade-in
 │   ├── icon.svg                   # Favicon (cake icon)
 │   ├── layout.tsx                 # Root layout + metadata
-│   └── page.tsx                   # Root page → background + ChatWindow card
+│   └── page.tsx                   # Root page → background + ChatWindow
 ├── components/
 │   ├── ChatWindow.tsx             # All state logic + layout
 │   ├── FloatingDecors.tsx         # Animated background SVG shapes
-│   ├── MessageBubble.tsx          # Message bubble + markdown-lite renderer
+│   ├── MessageBubble.tsx          # Message bubble + rich card renderers
 │   ├── QuickReplies.tsx           # Suggestion chips + All options reset
 │   └── TypingIndicator.tsx        # Animated three-dot bubble
 ├── lib/
 │   ├── predefined-responses.ts    # Q&A data, quick reply lists, matcher
-│   └── types.ts                   # Message, PredefinedEntry interfaces
-├── .env.local                     # ANTHROPIC_API_KEY (not committed)
+│   └── types.ts                   # Message, RichCard, PredefinedEntry types
+├── .env.local                     # GROQ_API_KEY (not committed)
 └── README.md
 ```
 
@@ -76,25 +87,25 @@ aichatbot/
 
 ## Business Data
 
-|              |                                              |
-| ------------ | -------------------------------------------- |
-| **Location** | Rd 123, Port Harcourt, Rivers State          |
-| **Phone**    | 08125888459                                  |
-| **Hours**    | Mon–Sat, 8:00 AM – 7:00 PM · Closed Sundays  |
+| | |
+| --- | --- |
+| **Location** | Avenue 123, Port Harcourt, Rivers State |
+| **Phone** | 08125888459 |
+| **Hours** | Mon–Sat, 8:00 AM – 7:00 PM · Closed Sundays |
 | **Delivery** | Port Harcourt only · Min ₦5,000 · Fee ₦1,000 |
 
 ### Menu
 
-| Item                   | Price   |
-| ---------------------- | ------- |
-| Meat Pie               | ₦500    |
-| Chicken Pie            | ₦700    |
-| Sausage Roll           | ₦400    |
-| Chin Chin (pack)       | ₦1,500  |
-| Doughnut (each)        | ₦300    |
-| Birthday Cake — Small  | ₦15,000 |
+| Item | Price |
+| --- | --- |
+| Meat Pie | ₦500 |
+| Chicken Pie | ₦700 |
+| Sausage Roll | ₦400 |
+| Chin Chin (pack) | ₦1,500 |
+| Doughnut (each) | ₦300 |
+| Birthday Cake — Small | ₦15,000 |
 | Birthday Cake — Medium | ₦25,000 |
-| Birthday Cake — Large  | ₦40,000 |
+| Birthday Cake — Large | ₦40,000 |
 
 ---
 
@@ -110,10 +121,10 @@ npm install
 
 ```bash
 # .env.local
-ANTHROPIC_API_KEY=your_api_key_here
+GROQ_API_KEY=your_api_key_here
 ```
 
-Get a key at [console.anthropic.com](https://console.anthropic.com). Predefined quick replies work without credits — only free-form AI responses require a funded account.
+Get a free key at [console.groq.com](https://console.groq.com). No billing required. Predefined quick replies work without any API key — only free-form AI responses require one.
 
 ### 3. Run the dev server
 
@@ -132,10 +143,10 @@ User sends a message
 Typing indicator appears (1–2 s delay)
       ↓
     Exact match in predefined-responses.ts?
-    ├── YES → return hardcoded response instantly (no API call)
+    ├── YES → return rich card / hardcoded response instantly (no API call)
     └── NO  → POST /api/chat with conversation history
                     ↓
-              Claude responds
+              Groq (Llama 3.3 70B) responds
                     ↓
         Bot bubble replaces typing indicator
 ```
@@ -144,14 +155,28 @@ Typing indicator appears (1–2 s delay)
 
 ## Customisation
 
-| What                                  | Where                                                     |
-| ------------------------------------- | --------------------------------------------------------- |
-| Menu, prices, hours, quick reply text | `lib/predefined-responses.ts`                             |
-| AI personality / bakery data          | System prompt in `app/api/chat/route.ts`                  |
-| AI model                              | `model` field in `app/api/chat/route.ts`                  |
-| Primary colour (`#0084FF`)            | `ChatWindow.tsx`, `MessageBubble.tsx`, `QuickReplies.tsx` |
-| Background gradient                   | `app/page.tsx`                                            |
-| Floating decorations                  | `components/FloatingDecors.tsx`                           |
+| What | Where |
+| --- | --- |
+| Menu, prices, hours, quick reply text | `lib/predefined-responses.ts` |
+| Rich card content (hours, address, phone) | `lib/predefined-responses.ts` |
+| AI personality / bakery data | System prompt in `app/api/chat/route.ts` |
+| AI model | `model` field in `app/api/chat/route.ts` |
+| Primary colour (`#0084FF`) | `ChatWindow.tsx`, `MessageBubble.tsx`, `QuickReplies.tsx` |
+| Background gradient | `app/page.tsx` |
+| Floating decorations | `components/FloatingDecors.tsx` |
+
+---
+
+## Groq Free Tier Limits
+
+| Limit | llama-3.3-70b-versatile |
+| --- | --- |
+| Requests / minute | 30 |
+| Requests / day | 1,000 |
+| Tokens / minute | 12,000 |
+| Tokens / day | 100,000 |
+
+For higher volume, swap to `llama-3.1-8b-instant` (14,400 req/day) in `app/api/chat/route.ts`.
 
 ---
 
@@ -161,15 +186,15 @@ Typing indicator appears (1–2 s delay)
 npx vercel
 ```
 
-Add `ANTHROPIC_API_KEY` under **Settings → Environment Variables** in your Vercel project.
+Add `GROQ_API_KEY` under **Settings → Environment Variables** in your Vercel project.
 
 ---
 
 ## Environment Variables
 
-| Variable            | Required             | Description                                  |
-| ------------------- | -------------------- | -------------------------------------------- |
-| `ANTHROPIC_API_KEY` | Yes (for AI replies) | Anthropic API key from console.anthropic.com |
+| Variable | Required | Description |
+| --- | --- | --- |
+| `GROQ_API_KEY` | Yes (for AI replies) | Groq API key from console.groq.com |
 
 ---
 
