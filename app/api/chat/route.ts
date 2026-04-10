@@ -37,6 +37,38 @@ Birthday Cakes:
 - For cake orders, recommend calling 2–3 days in advance
 - If asked about something unrelated, politely redirect to bakery topics`;
 
+type GroqMessage = { role: "user" | "assistant" | "system"; content: string };
+
+async function callGroq(messages: GroqMessage[], attempt = 1): Promise<string> {
+  const MAX_ATTEMPTS = 3;
+  try {
+    const response = await client.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      max_tokens: 512,
+      messages,
+    });
+    return (
+      response.choices[0]?.message?.content ??
+      "I'm sorry, I couldn't process that. Please try again or call us at 08125888459. 🙏"
+    );
+  } catch (error) {
+    const errMsg = error instanceof Error ? error.message : "";
+    const isRetryable =
+      errMsg.includes("ETIMEDOUT") ||
+      errMsg.includes("fetch failed") ||
+      errMsg.includes("Connection error") ||
+      errMsg.includes("ECONNRESET") ||
+      errMsg.includes("socket");
+
+    if (isRetryable && attempt < MAX_ATTEMPTS) {
+      const delay = attempt * 1000; // 1s, 2s
+      await new Promise((r) => setTimeout(r, delay));
+      return callGroq(messages, attempt + 1);
+    }
+    throw error;
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { messages } = await request.json();
@@ -48,22 +80,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await client.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
-      max_tokens: 512,
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        ...messages.map((m: { role: string; content: string }) => ({
-          role: m.role as "user" | "assistant",
-          content: m.content,
-        })),
-      ],
-    });
+    const groqMessages: GroqMessage[] = [
+      { role: "system", content: SYSTEM_PROMPT },
+      ...messages.map((m: { role: string; content: string }) => ({
+        role: m.role as "user" | "assistant",
+        content: m.content,
+      })),
+    ];
 
-    const text =
-      response.choices[0]?.message?.content ??
-      "I'm sorry, I couldn't process that. Please try again or call us at 08125888459. 🙏";
-
+    const text = await callGroq(groqMessages);
     return NextResponse.json({ message: text });
   } catch (error) {
     console.error("Groq API error:", error);
@@ -80,6 +105,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: "Configuration error. Please contact the bakery directly at 08125888459." },
         { status: 401 }
+      );
+    }
+    if (
+      errMsg.includes("ETIMEDOUT") ||
+      errMsg.includes("fetch failed") ||
+      errMsg.includes("Connection error")
+    ) {
+      return NextResponse.json(
+        { error: "Connection timed out after 3 attempts. Please check your internet and try again. 🙏" },
+        { status: 503 }
       );
     }
 
