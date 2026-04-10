@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Sweet Delights Bakery — AI Support',
-  description: 'Customer support chatbot for Sweet Delights Bakery, Lagos.',
+  title: "Sweet Delights Bakery — AI Support",
+  description: "Customer support chatbot for Sweet Delights Bakery, Rivers.",
 };
 
 export default function RootLayout({

@@ -65,6 +65,15 @@ function GlassOrb() {
   );
 }
 
+const SUGGESTIONS = [
+  "What custom cake designs do you offer?",
+  "How far in advance should I order a birthday cake?",
+  "What are your most popular pastries?",
+  "Do you offer same-day delivery?",
+  "What payment methods do you accept?",
+  "Can I get a price quote for a wedding cake?",
+];
+
 export default function ChatWindow() {
   const [messages, setMessages] = useState<Message[]>([WELCOME_MESSAGE]);
   const [quickReplies, setQuickReplies] = useState<string[]>(INITIAL_QUICK_REPLIES);
@@ -72,9 +81,12 @@ export default function ChatWindow() {
   const [isTyping, setIsTyping] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasStartedChat, setHasStartedChat] = useState(false);
+  const [attachedFile, setAttachedFile] = useState<File | null>(null);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesRef = useRef<Message[]>([WELCOME_MESSAGE]);
 
   useEffect(() => { messagesRef.current = messages; }, [messages]);
@@ -92,15 +104,19 @@ export default function ChatWindow() {
 
       setHasStartedChat(true);
 
+      const fileLabel = attachedFile ? ` [Attached: ${attachedFile.name}]` : "";
       const userMessage: Message = {
         id: `user-${Date.now()}`,
         role: "user",
-        content: trimmed,
+        content: trimmed + fileLabel,
         timestamp: new Date(),
       };
 
       setMessages((prev) => [...prev, userMessage]);
       setInputValue("");
+      setAttachedFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      setShowSuggestions(false);
       setQuickReplies([]);
       setIsTyping(true);
       setIsLoading(true);
@@ -169,7 +185,7 @@ export default function ChatWindow() {
       setIsTyping(false);
       setIsLoading(false);
     },
-    [isLoading]
+    [isLoading, hasStartedChat, attachedFile]
   );
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -182,9 +198,10 @@ export default function ChatWindow() {
   /* ── Shared bottom bar ── */
   const bottomBar = (
     <div
-      className="shrink-0 border-t border-white/40"
-      style={{ background: "rgba(255,255,255,0.65)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" }}
+      className="shrink-0 px-4 pb-4 pt-2"
+      style={{ background: "rgba(255,255,255,0.55)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)" }}
     >
+      {/* Quick replies — horizontal scroll, no wrap */}
       <QuickReplies
         replies={quickReplies}
         onSelect={handleSend}
@@ -195,11 +212,65 @@ export default function ChatWindow() {
         }
         disabled={isLoading}
       />
-      <div className="flex items-center gap-3 px-4 py-3">
+
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*,.pdf,.doc,.docx"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0] ?? null;
+          setAttachedFile(file);
+          if (file) setShowSuggestions(false);
+        }}
+      />
+
+      {/* Suggestions popup */}
+      {showSuggestions && (
         <div
-          className="flex-1 flex items-center rounded-2xl px-4 transition-all focus-within:ring-2 focus-within:ring-violet-400/50"
-          style={{ background: "rgba(255,255,255,0.7)", border: "1px solid rgba(167,139,250,0.3)", backdropFilter: "blur(8px)" }}
+          className="mb-2 rounded-2xl overflow-hidden shadow-lg border border-white/60"
+          style={{ background: "rgba(255,255,255,0.95)", backdropFilter: "blur(16px)" }}
         >
+          <p className="text-[11px] font-semibold text-violet-400 uppercase tracking-wide px-4 pt-3 pb-1">
+            Suggested questions
+          </p>
+          {SUGGESTIONS.map((s) => (
+            <button
+              key={s}
+              onClick={() => { setInputValue(s); setShowSuggestions(false); inputRef.current?.focus(); }}
+              className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-violet-50 transition-colors border-t border-gray-50 first:border-0"
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Input card with gradient border */}
+      <div
+        className="rounded-2xl p-px"
+        style={{ background: "linear-gradient(135deg, #f9a8d4, #c084fc, #818cf8, #67e8f9)" }}
+      >
+        <div
+          className="rounded-2xl px-4 pt-3.5 pb-3"
+          style={{ background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)" }}
+        >
+          {/* Attached file preview */}
+          {attachedFile && (
+            <div className="flex items-center gap-2 mb-2 px-2 py-1.5 rounded-xl bg-violet-50 border border-violet-100">
+              <span className="text-base">{attachedFile.type.startsWith("image/") ? "🖼️" : "📄"}</span>
+              <span className="text-xs text-violet-700 font-medium truncate flex-1">{attachedFile.name}</span>
+              <button
+                onClick={() => { setAttachedFile(null); if (fileInputRef.current) fileInputRef.current.value = ""; }}
+                className="text-violet-400 hover:text-violet-600 text-xs font-bold shrink-0"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
+          {/* Text input */}
           <input
             ref={inputRef}
             type="search"
@@ -212,20 +283,64 @@ export default function ChatWindow() {
             onKeyDown={handleKeyDown}
             placeholder="Ask me anything..."
             disabled={isLoading}
-            className="flex-1 bg-transparent py-3 text-sm text-gray-700 placeholder-violet-300 outline-none disabled:opacity-60"
+            className="w-full bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none disabled:opacity-60 mb-3"
           />
+
+          {/* Action row */}
+          <div className="flex items-center justify-between">
+            {/* Left actions */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => { setShowSuggestions(false); fileInputRef.current?.click(); }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+                style={{
+                  background: attachedFile ? "rgba(124,58,237,0.1)" : "rgba(0,0,0,0.04)",
+                  border: attachedFile ? "1px solid rgba(124,58,237,0.3)" : "1px solid rgba(0,0,0,0.06)",
+                  color: attachedFile ? "#7c3aed" : "#6b7280",
+                }}
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                </svg>
+                {attachedFile ? "1 file" : "Attach"}
+              </button>
+              <button
+                onClick={() => setShowSuggestions((v) => !v)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors"
+                style={{
+                  background: showSuggestions ? "rgba(124,58,237,0.1)" : "rgba(0,0,0,0.04)",
+                  border: showSuggestions ? "1px solid rgba(124,58,237,0.3)" : "1px solid rgba(0,0,0,0.06)",
+                  color: showSuggestions ? "#7c3aed" : "#6b7280",
+                }}
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
+                Suggest
+              </button>
+            </div>
+
+            {/* Right — send button */}
+            <button
+              onClick={() => handleSend(inputValue)}
+              disabled={isLoading || !inputValue.trim()}
+              aria-label="Send message"
+              className="flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold text-white transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+              style={{
+                background: inputValue.trim()
+                  ? "linear-gradient(135deg, #f472b6, #a855f7)"
+                  : "rgba(0,0,0,0.1)",
+                color: inputValue.trim() ? "white" : "#9ca3af",
+                boxShadow: inputValue.trim() ? "0 4px 14px rgba(168,85,247,0.4)" : "none",
+              }}
+            >
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+              </svg>
+              Send
+            </button>
+          </div>
         </div>
-        <button
-          onClick={() => handleSend(inputValue)}
-          disabled={isLoading || !inputValue.trim()}
-          aria-label="Send message"
-          className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
-          style={{ background: "linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%)", boxShadow: "0 4px 14px rgba(124,58,237,0.4)" }}
-        >
-          <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-white translate-x-0.5">
-            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-          </svg>
-        </button>
       </div>
     </div>
   );

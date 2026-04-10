@@ -64,7 +64,7 @@ export const PREDEFINED_RESPONSES: PredefinedEntry[] = [
     richCard: {
       type: "location",
       address: "Avenue 123, Port Harcourt, Rivers",
-      landmark: "Near Lagos Island General Hospital",
+      landmark: "Near Portharcourt General Hospital",
     },
     followUps: ["Opening Hours", "Delivery Info", "Contact Us"],
   },
@@ -73,7 +73,7 @@ export const PREDEFINED_RESPONSES: PredefinedEntry[] = [
     response: "Here's everything you need to know about our delivery. 🚚",
     richCard: {
       type: "delivery",
-      area: "Within Lagos Island",
+      area: "Within Rivers",
       minOrder: "₦5,000",
       fee: "₦1,000 flat",
       phone: "08125888459",
