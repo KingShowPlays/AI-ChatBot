@@ -14,14 +14,14 @@ A production-ready AI-powered customer support chatbot we developed for **Sweet 
 | --- | --- |
 | Christian Kingdavid | U2022/5570005 |
 | [Member 2 Name] | [Matric Number] |
-| [Member 3 Name] | [Matric Number] |
-| [Member 4 Name] | [Matric Number] |
+| Igah Jesse George | U2022/5570003 |
+| WORDU JOSEPH CHIDIEBERE | U2022/5570004 |
 | [Member 5 Name] | [Matric Number] |
-| [Member 6 Name] | [Matric Number] |
-| [Member 7 Name] | [Matric Number] |
+| Bubu Oghenetega Victor  | U2022/5570007 |
+| Collins Progress Chibuike | U2022/5570008 |
 | [Member 8 Name] | [Matric Number] |
 | [Member 9 Name] | [Matric Number] |
-| [Member 10 Name] | [Matric Number] |
+| Igboanugo Divine Favour | U2022/5570012 |
 
 ---
 
