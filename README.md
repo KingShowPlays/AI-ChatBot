@@ -12,7 +12,7 @@ A production-ready AI-powered customer support chatbot we developed for **Sweet 
 
 | Name | Matric Number |
 | --- | --- |
-| [Christian Kingdavid] | [U2022/5570005] |
+| Christian Kingdavid | U2022/5570005 |
 | [Member 2 Name] | [Matric Number] |
 | [Member 3 Name] | [Matric Number] |
 | [Member 4 Name] | [Matric Number] |
