@@ -16,7 +16,7 @@ A production-ready AI-powered customer support chatbot we developed for **Sweet 
 | Michael Edwin Panama | U2022/5570002 |
 | Igah Jesse George | U2022/5570003 |
 | WORDU JOSEPH CHIDIEBERE | U2022/5570004 |
-| [Member 5 Name] | [Matric Number] |
+| Tambari Perfect Barilugbene | U2022/5570006 |
 | Bubu Oghenetega Victor  | U2022/5570007 |
 | Collins Progress Chibuike | U2022/5570008 |
 | Anthony Eno Aniefiok | U2022/5570009 |
