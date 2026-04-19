@@ -13,21 +13,21 @@ A production-ready AI-powered customer support chatbot we developed for **Sweet 
 | Name | Matric Number |
 | --- | --- |
 | Christian Kingdavid | U2022/5570005 |
-| [Member 2 Name] | [Matric Number] |
+| Michael Edwin Panama | U2022/5570002 |
 | Igah Jesse George | U2022/5570003 |
 | WORDU JOSEPH CHIDIEBERE | U2022/5570004 |
 | [Member 5 Name] | [Matric Number] |
 | Bubu Oghenetega Victor  | U2022/5570007 |
 | Collins Progress Chibuike | U2022/5570008 |
-| [Member 8 Name] | [Matric Number] |
-| [Member 9 Name] | [Matric Number] |
+| Anthony Eno Aniefiok | U2022/5570009 |
+| EMEZIE KELECHI HARRY | U2022/5570013 |
 | Igboanugo Divine Favour | U2022/5570012 |
 
 ---
 
 ## 📋 Project Overview
 
-For this project, we set out to create a modern, AI-powered customer support chatbot that could handle real-world business needs. We chose Sweet Delights Bakery as our use case — a local bakery in Port Harcourt that needed an automated way to answer customer questions about their menu, prices, hours, and delivery options.
+For this project, we set out to create a modern, AI-powered customer support chatbot that could handle real-world business needs. We chose Sweet Delights Bakery as our use case, a local bakery in Port Harcourt that needed an automated way to answer customer questions about their menu, prices, hours, and delivery options.
 
 Our solution combines predefined responses for common queries (for instant replies) with AI-powered responses (using Groq's Llama 3.3 70B model) for more complex or open-ended questions. This hybrid approach ensures fast, accurate responses while maintaining the flexibility to handle unexpected customer inquiries.
 
